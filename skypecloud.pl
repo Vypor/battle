@@ -4,7 +4,6 @@ my $skype    = $ARGV[0];
 my $interval = $ARGV[1];
 my $domain   = "api.speedresolve.com";
 my $key      = "YOURKEYHERE";
-my $cmd      = "perl spoof.pl $content 80 65500 $interval";
 
 if ( $#ARGV != 1 ) {
     print "Usage: perl skypecloud.pl <skypename> <secondstocheck>\n";
