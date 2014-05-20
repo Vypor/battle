@@ -1,6 +1,12 @@
 use IO::Socket;
 use threads;
 
+if ($#ARGV != 2) {
+print "Usage: perl sshflood.pl <ip> <threads> <time>\n";
+print "https://github.com/Vypor/battle\n";
+exit(1);
+}
+
 my $ip      = $ARGV[0];
 my $threads = $ARGV[1];
 alarm( $ARGV[2] );
