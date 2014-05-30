@@ -5,7 +5,7 @@ use Socket;
 #Usage
 if ( @ARGV == 0 ) {
     print
-"Usage: ./$PROG [IP] [PORT] [TIME] [LIST] [THREADS]\nMade by Vypor\nUse -1 for random ports, and -1 for unlimited time\nDigitalgangsters.org\n";
+"Usage: ./$PROG [IP] [PORT] [THREAD] [LIST] [TIME]\nMade by Vypor\nUse -1 for random ports, and -1 for unlimited time\nDigitalgangsters.org\n";
     exit;
 }
 
